@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 function Dashboard() {
-  const { props, todaySessions, missingProps, warningProps, todayRecords } = useStore();
+  const { props, todaySessions, missingProps, warningProps, misplacedProps, todayRecords } = useStore();
   const [recordModalOpen, setRecordModalOpen] = useState(false);
   const [addPropModalOpen, setAddPropModalOpen] = useState(false);
   const [selectedProp, setSelectedProp] = useState<Prop | null>(null);
@@ -93,7 +93,7 @@ function Dashboard() {
             value={missingProps.length + warningProps.length}
             icon={missingProps.length > 0 ? <AlertTriangle size={22} /> : <AlertCircle size={22} />}
             tone={missingProps.length > 0 ? 'danger' : 'warn'}
-            sub={`缺失 ${missingProps.length} · 损耗/替换 ${warningProps.length}`}
+            sub={`缺失 ${missingProps.length} · 混放 ${misplacedProps.length} · 损耗/替换 ${warningProps.length - misplacedProps.length}`}
           />
         </section>
 

@@ -32,6 +32,8 @@ export function ActivityTimeline() {
                       ? 'bg-amber-500'
                       : r.type === '替换'
                       ? 'bg-purple-500'
+                      : r.type === '混放'
+                      ? 'bg-orange-500'
                       : 'bg-red-500'
                   }`}
                 />

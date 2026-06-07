@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { useStore } from '../store/StoreContext';
 import { StatusBadge } from './Badges';
 import type { Prop, PropCategory, PropStatus } from '../types';
-import { Filter, Plus, ArrowRightLeft, Search, AlertTriangle, AlertCircle } from 'lucide-react';
+import { Filter, Plus, ArrowRightLeft, Search, AlertTriangle, AlertCircle, MapPinOff } from 'lucide-react';
 
 const categories: ('全部' | PropCategory)[] = ['全部', '面具', '徽章', '密信', '钥匙', '信物', '其他'];
-const statuses: ('全部' | PropStatus)[] = ['全部', '在库', '借出', '损耗', '缺失', '替换中'];
+const statuses: ('全部' | PropStatus)[] = ['全部', '在库', '借出', '损耗', '缺失', '替换中', '混放'];
 
 export function PropsPanel({
   onQuickAction,
@@ -14,7 +14,7 @@ export function PropsPanel({
   onQuickAction: (prop: Prop) => void;
   onAddProp: () => void;
 }) {
-  const { props, missingProps, warningProps } = useStore();
+  const { props, missingProps, warningProps, misplacedProps } = useStore();
   const [category, setCategory] = useState<'全部' | PropCategory>('全部');
   const [status, setStatus] = useState<'全部' | PropStatus>('全部');
   const [keyword, setKeyword] = useState('');
@@ -50,10 +50,16 @@ export function PropsPanel({
               缺失 {missingProps.length} 件
             </span>
           )}
-          {warningProps.length > 0 && (
+          {misplacedProps.length > 0 && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-700 text-sm font-medium border border-orange-200">
+              <MapPinOff size={16} />
+              混放 {misplacedProps.length} 件
+            </span>
+          )}
+          {warningProps.filter((p) => p.status !== '混放').length > 0 && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-sm font-medium border border-amber-200">
               <AlertCircle size={16} />
-              异常 {warningProps.length} 件
+              损耗/替换 {warningProps.filter((p) => p.status !== '混放').length} 件
             </span>
           )}
           <button
@@ -122,7 +128,13 @@ export function PropsPanel({
               <tr
                 key={p.id}
                 className={`hover:bg-slate-50 transition ${
-                  p.status === '缺失' ? 'bg-red-50/40' : p.status === '损耗' || p.status === '替换中' ? 'bg-amber-50/30' : ''
+                  p.status === '缺失'
+                    ? 'bg-red-50/40'
+                    : p.status === '混放'
+                    ? 'bg-orange-50/40'
+                    : p.status === '损耗' || p.status === '替换中'
+                    ? 'bg-amber-50/30'
+                    : ''
                 }`}
               >
                 <td className="px-6 py-3">

@@ -14,13 +14,16 @@ interface StoreContextType {
   todayRecords: PropRecord[];
   missingProps: Prop[];
   warningProps: Prop[];
+  misplacedProps: Prop[];
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
-const STORAGE_KEY = 'drama-prop-manager-store-v1';
+const STORAGE_KEY = 'drama-prop-manager-store-v4-fresh';
+const SCHEMA_VERSION = 2;
 
 interface StoredState {
+  schemaVersion?: number;
   props: Prop[];
   sessions: ScriptSession[];
   records: PropRecord[];
@@ -30,17 +33,20 @@ function loadState(): StoredState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw) as StoredState;
+      if (parsed.schemaVersion === SCHEMA_VERSION) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.error('Failed to load store', e);
   }
-  return { props: mockProps, sessions: mockSessions, records: mockRecords };
+  return { schemaVersion: SCHEMA_VERSION, props: mockProps, sessions: mockSessions, records: mockRecords };
 }
 
 function saveState(state: StoredState) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, schemaVersion: SCHEMA_VERSION }));
   } catch (e) {
     console.error('Failed to save store', e);
   }
@@ -68,7 +74,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const todaySessions = state.sessions.filter((s) => s.startTime.startsWith(todayStr()));
   const todayRecords = state.records.filter((r) => r.timestamp.startsWith(todayStr()));
   const missingProps = state.props.filter((p) => p.status === '缺失');
-  const warningProps = state.props.filter((p) => p.status === '损耗' || p.status === '替换中');
+  const misplacedProps = state.props.filter((p) => p.status === '混放');
+  const warningProps = state.props.filter(
+    (p) => p.status === '损耗' || p.status === '替换中' || p.status === '混放'
+  );
 
   const addRecord = (record: Omit<PropRecord, 'id' | 'timestamp'>) => {
     const newRecord: PropRecord = {
@@ -86,6 +95,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         else if (record.type === '损耗') newStatus = '损耗';
         else if (record.type === '缺失') newStatus = '缺失';
         else if (record.type === '替换') newStatus = '替换中';
+        else if (record.type === '混放') newStatus = '混放';
 
         updatedProps = s.props.map((p) =>
           p.id === record.propId ? { ...p, status: newStatus, updatedAt: todayStr() } : p
@@ -137,6 +147,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         todayRecords,
         missingProps,
         warningProps,
+        misplacedProps,
       }}
     >
       {children}

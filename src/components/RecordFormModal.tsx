@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from '../store/StoreContext';
 import { Modal } from './Modal';
 import type { Prop, RecordType } from '../types';
 
-const recordTypes: RecordType[] = ['借出', '归还', '损耗', '替换', '缺失'];
+const recordTypes: RecordType[] = ['借出', '归还', '损耗', '替换', '缺失', '混放'];
 
 export function RecordFormModal({
   open,
@@ -25,9 +25,21 @@ export function RecordFormModal({
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    if (open) {
+      setPropId(defaultProp?.id || '');
+      setType(defaultType || '借出');
+      setQuantity(1);
+      setOperator('');
+      setSessionId('');
+      setNote('');
+      setError('');
+    }
+  }, [open, defaultProp, defaultType]);
+
   const reset = () => {
-    setPropId(defaultProp?.id || '');
-    setType(defaultType || '借出');
+    setPropId('');
+    setType('借出');
     setQuantity(1);
     setOperator('');
     setSessionId('');
@@ -79,7 +91,7 @@ export function RecordFormModal({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">操作类型 *</label>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-6 gap-2">
             {recordTypes.map((t) => (
               <button
                 key={t}

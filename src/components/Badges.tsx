@@ -6,6 +6,7 @@ const statusColors: Record<PropStatus, string> = {
   损耗: 'bg-amber-100 text-amber-700 border-amber-200',
   缺失: 'bg-red-100 text-red-700 border-red-200',
   替换中: 'bg-purple-100 text-purple-700 border-purple-200',
+  混放: 'bg-orange-100 text-orange-700 border-orange-200',
 };
 
 const recordColors: Record<RecordType, string> = {
@@ -14,6 +15,7 @@ const recordColors: Record<RecordType, string> = {
   损耗: 'bg-amber-500',
   替换: 'bg-purple-500',
   缺失: 'bg-red-500',
+  混放: 'bg-orange-500',
 };
 
 export function StatusBadge({ status }: { status: PropStatus }) {

@@ -1,6 +1,6 @@
 export type PropCategory = '面具' | '徽章' | '密信' | '钥匙' | '信物' | '其他';
 
-export type PropStatus = '在库' | '借出' | '损耗' | '缺失' | '替换中';
+export type PropStatus = '在库' | '借出' | '损耗' | '缺失' | '替换中' | '混放';
 
 export interface Prop {
   id: string;
@@ -26,7 +26,7 @@ export interface ScriptSession {
   playerCount: number;
 }
 
-export type RecordType = '借出' | '归还' | '损耗' | '替换' | '缺失';
+export type RecordType = '借出' | '归还' | '损耗' | '替换' | '缺失' | '混放';
 
 export interface PropRecord {
   id: string;
