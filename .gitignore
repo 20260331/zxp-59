@@ -1,0 +1,27 @@
+node_modules
+dist
+.vite
+*.log
+.DS_Store
+
+# Added by git_init_ignore
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+prompts.md
+temp.md
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.svelte-kit/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
