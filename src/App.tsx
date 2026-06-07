@@ -15,10 +15,11 @@ import {
   CalendarCheck,
   Plus,
   Sparkles,
+  ClipboardCheck,
 } from 'lucide-react';
 
 function Dashboard() {
-  const { props, todaySessions, missingProps, warningProps, misplacedProps, todayRecords } = useStore();
+  const { props, todaySessions, missingProps, warningProps, misplacedProps, todayRecords, sessionsPendingChecklist } = useStore();
   const [recordModalOpen, setRecordModalOpen] = useState(false);
   const [addPropModalOpen, setAddPropModalOpen] = useState(false);
   const [selectedProp, setSelectedProp] = useState<Prop | null>(null);
@@ -78,8 +79,8 @@ function Dashboard() {
             label="今日场次"
             value={todaySessions.length}
             icon={<CalendarCheck size={22} />}
-            tone="info"
-            sub={`进行中 ${todaySessions.filter((s) => s.status === '进行中').length} 场`}
+            tone={sessionsPendingChecklist.length > 0 ? 'warn' : 'info'}
+            sub={`进行中 ${todaySessions.filter((s) => s.status === '进行中').length} 场${sessionsPendingChecklist.length > 0 ? ` · ${sessionsPendingChecklist.length} 场待核对` : ''}`}
           />
           <StatCard
             label="今日操作"

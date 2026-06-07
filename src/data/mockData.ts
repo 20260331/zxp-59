@@ -1,4 +1,4 @@
-import type { Prop, ScriptSession, PropRecord } from '../types';
+import type { Prop, ScriptSession, PropRecord, SessionChecklist } from '../types';
 
 const today = new Date();
 const dateStr = today.toISOString().split('T')[0];
@@ -251,6 +251,9 @@ export const mockRecords: PropRecord[] = [
     operator: '小琳',
     note: '清场时发现错放在C柜-2层',
     timestamp: `${dateStr} 18:45`,
+    checklistId: 'cl-001',
+    sessionId: 's-001',
+    sessionName: '血色婚礼',
   },
   {
     id: 'r-007',
@@ -261,5 +264,55 @@ export const mockRecords: PropRecord[] = [
     operator: '阿杰',
     note: '混在浮生若梦面具盒中',
     timestamp: `${dateStr} 17:20`,
+  },
+];
+
+export const mockChecklists: SessionChecklist[] = [
+  {
+    id: 'cl-001',
+    sessionId: 's-001',
+    sessionName: '血色婚礼',
+    room: '1号房·玫瑰厅',
+    host: '小琳',
+    items: [
+      {
+        propId: 'p-003',
+        propName: '密信·血色婚礼',
+        scriptName: '血色婚礼',
+        expectedLocation: 'B柜-1层',
+        actualStatus: '正常',
+        quantity: 1,
+      },
+      {
+        propId: 'p-008',
+        propName: '家族徽章',
+        scriptName: '血色婚礼',
+        expectedLocation: 'A柜-2层',
+        actualStatus: '正常',
+        quantity: 4,
+      },
+      {
+        propId: 'p-010',
+        propName: '新娘头纱',
+        scriptName: '血色婚礼',
+        expectedLocation: 'C柜-3层',
+        actualStatus: '正常',
+        quantity: 1,
+      },
+      {
+        propId: 'p-011',
+        propName: '少年徽章',
+        scriptName: '迷雾山庄',
+        expectedLocation: 'A柜-2层',
+        actualStatus: '混放',
+        actualLocation: 'C柜-2层',
+        quantity: 1,
+        note: '清场时发现错放在C柜',
+      },
+    ],
+    missingCount: 0,
+    misplacedCount: 1,
+    verifiedBy: '小琳',
+    verifiedAt: `${dateStr} 18:45`,
   },
 ];

@@ -1,6 +1,6 @@
 import { useStore } from '../store/StoreContext';
 import { RecordBadge } from './Badges';
-import { Activity } from 'lucide-react';
+import { Activity, ClipboardCheck } from 'lucide-react';
 
 export function ActivityTimeline() {
   const { todayRecords } = useStore();
@@ -34,6 +34,8 @@ export function ActivityTimeline() {
                       ? 'bg-purple-500'
                       : r.type === '混放'
                       ? 'bg-orange-500'
+                      : r.type === '场次核对'
+                      ? 'bg-primary-500'
                       : 'bg-red-500'
                   }`}
                 />
@@ -41,6 +43,12 @@ export function ActivityTimeline() {
                   <RecordBadge type={r.type} />
                   <span className="font-medium text-slate-900">{r.propName}</span>
                   <span className="text-slate-400 text-sm">×{r.quantity}</span>
+                  {r.checklistId && (
+                    <span className="text-xs bg-primary-50 text-primary-700 border border-primary-200 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                      <ClipboardCheck size={10} />
+                      场次核对发现
+                    </span>
+                  )}
                   {r.sessionName && (
                     <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
                       {r.sessionName}

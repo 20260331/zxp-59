@@ -16,6 +16,7 @@ const recordColors: Record<RecordType, string> = {
   替换: 'bg-purple-500',
   缺失: 'bg-red-500',
   混放: 'bg-orange-500',
+  场次核对: 'bg-primary-500',
 };
 
 export function StatusBadge({ status }: { status: PropStatus }) {
