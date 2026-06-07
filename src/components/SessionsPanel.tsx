@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '../store/StoreContext';
-import { RecordBadge } from './Badges';
+import { RecordBadge, ResolveBadge } from './Badges';
 import { SessionChecklistModal } from './SessionChecklistModal';
 import type { ScriptSession } from '../types';
 import {
@@ -165,14 +165,28 @@ export function SessionsPanel() {
 
               {(missingItems.length > 0 || misplacedItems.length > 0) && (
                 <div className="mt-4 space-y-2 border-t border-red-200/60 pt-4">
-                  <div className="text-xs font-semibold text-red-700 flex items-center gap-1">
-                    <AlertCircle size={14} />
-                    本场次异常道具追踪
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-semibold text-red-700 flex items-center gap-1">
+                      <AlertCircle size={14} />
+                      本场次异常道具追踪
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-slate-500">处理进度:</span>
+                      <span className="text-red-600 font-medium">
+                        未处理 {[...missingItems, ...misplacedItems].filter((i) => !i.resolveStatus || i.resolveStatus === '未处理').length}
+                      </span>
+                      <span className="text-sky-600 font-medium">
+                        处理中 {[...missingItems, ...misplacedItems].filter((i) => i.resolveStatus === '处理中').length}
+                      </span>
+                      <span className="text-teal-600 font-medium">
+                        已解决 {[...missingItems, ...misplacedItems].filter((i) => i.resolveStatus === '已解决').length}
+                      </span>
+                    </div>
                   </div>
                   {missingItems.map((item) => (
                     <div
                       key={`missing-${item.propId}`}
-                      className="flex items-center gap-3 text-sm bg-red-50 rounded-lg px-3 py-2 border border-red-100"
+                      className="flex items-center gap-3 text-sm bg-red-50 rounded-lg px-3 py-2 border border-red-100 flex-wrap"
                     >
                       <RecordBadge type="缺失" />
                       <span className="font-medium text-slate-800">{item.propName}</span>
@@ -180,13 +194,17 @@ export function SessionsPanel() {
                       <span className="text-xs text-slate-500">
                         应在：{item.expectedLocation}
                       </span>
+                      {item.resolveStatus && <ResolveBadge status={item.resolveStatus} />}
+                      {item.resolvedBy && (
+                        <span className="text-xs text-slate-500">跟进：{item.resolvedBy}</span>
+                      )}
                       {item.note && <span className="ml-auto text-xs text-red-600">{item.note}</span>}
                     </div>
                   ))}
                   {misplacedItems.map((item) => (
                     <div
                       key={`misplaced-${item.propId}`}
-                      className="flex items-center gap-3 text-sm bg-orange-50 rounded-lg px-3 py-2 border border-orange-100"
+                      className="flex items-center gap-3 text-sm bg-orange-50 rounded-lg px-3 py-2 border border-orange-100 flex-wrap"
                     >
                       <RecordBadge type="混放" />
                       <span className="font-medium text-slate-800">{item.propName}</span>
@@ -198,6 +216,10 @@ export function SessionsPanel() {
                         <span className="text-xs text-orange-600">
                           → 实际：{item.actualLocation}
                         </span>
+                      )}
+                      {item.resolveStatus && <ResolveBadge status={item.resolveStatus} />}
+                      {item.resolvedBy && (
+                        <span className="text-xs text-slate-500">跟进：{item.resolvedBy}</span>
                       )}
                       {item.note && !item.actualLocation && (
                         <span className="ml-auto text-xs text-orange-600">{item.note}</span>

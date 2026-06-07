@@ -1,4 +1,4 @@
-import type { PropStatus, RecordType } from '../types';
+import type { PropStatus, RecordType, ResolveStatus } from '../types';
 
 const statusColors: Record<PropStatus, string> = {
   在库: 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -17,6 +17,14 @@ const recordColors: Record<RecordType, string> = {
   缺失: 'bg-red-500',
   混放: 'bg-orange-500',
   场次核对: 'bg-primary-500',
+  开始处理: 'bg-sky-500',
+  已解决: 'bg-teal-500',
+};
+
+const resolveColors: Record<ResolveStatus, string> = {
+  未处理: 'bg-red-100 text-red-700 border-red-200',
+  处理中: 'bg-sky-100 text-sky-700 border-sky-200',
+  已解决: 'bg-teal-100 text-teal-700 border-teal-200',
 };
 
 export function StatusBadge({ status }: { status: PropStatus }) {
@@ -35,6 +43,16 @@ export function RecordBadge({ type }: { type: RecordType }) {
       className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold text-white ${recordColors[type]}`}
     >
       {type}
+    </span>
+  );
+}
+
+export function ResolveBadge({ status }: { status: ResolveStatus }) {
+  return (
+    <span
+      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${resolveColors[status]}`}
+    >
+      {status}
     </span>
   );
 }

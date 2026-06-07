@@ -1,4 +1,4 @@
-import type { Prop, ScriptSession, PropRecord, SessionChecklist } from '../types';
+import type { Prop, ScriptSession, PropRecord, SessionChecklist, HandoverSession } from '../types';
 
 const today = new Date();
 const dateStr = today.toISOString().split('T')[0];
@@ -62,6 +62,8 @@ export const mockProps: Prop[] = [
     note: '昨日交班时发现缺失',
     createdAt: dateStr,
     updatedAt: dateStr,
+    resolveStatus: '处理中',
+    resolvedBy: '老王',
   },
   {
     id: 'p-006',
@@ -125,12 +127,13 @@ export const mockProps: Prop[] = [
     name: '少年徽章',
     category: '徽章',
     scriptName: '迷雾山庄',
-    location: 'C柜-2层',
+    location: 'A柜-2层',
     status: '混放',
     quantity: 1,
     note: '本来在A柜-2层，现在错放到C柜',
     createdAt: dateStr,
     updatedAt: dateStr,
+    resolveStatus: '未处理',
   },
   {
     id: 'p-012',
@@ -143,6 +146,7 @@ export const mockProps: Prop[] = [
     note: '混在浮生若梦的面具里了',
     createdAt: dateStr,
     updatedAt: dateStr,
+    resolveStatus: '未处理',
   },
 ];
 
@@ -308,11 +312,23 @@ export const mockChecklists: SessionChecklist[] = [
         actualLocation: 'C柜-2层',
         quantity: 1,
         note: '清场时发现错放在C柜',
+        resolveStatus: '未处理',
       },
     ],
     missingCount: 0,
     misplacedCount: 1,
     verifiedBy: '小琳',
     verifiedAt: `${dateStr} 18:45`,
+  },
+];
+
+export const mockHandoverSessions: HandoverSession[] = [
+  {
+    id: 'h-001',
+    fromOperator: '小琳',
+    toOperator: '阿杰',
+    createdAt: `${dateStr} 19:00`,
+    resolvedCount: 0,
+    totalCount: 3,
   },
 ];

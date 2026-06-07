@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '../store/StoreContext';
-import { StatusBadge } from './Badges';
+import { StatusBadge, ResolveBadge } from './Badges';
 import type { Prop, PropCategory, PropStatus } from '../types';
-import { Filter, Plus, ArrowRightLeft, Search, AlertTriangle, AlertCircle, MapPinOff } from 'lucide-react';
+import { Filter, Plus, ArrowRightLeft, Search, AlertTriangle, AlertCircle, MapPinOff, User } from 'lucide-react';
 
 const categories: ('全部' | PropCategory)[] = ['全部', '面具', '徽章', '密信', '钥匙', '信物', '其他'];
 const statuses: ('全部' | PropStatus)[] = ['全部', '在库', '借出', '损耗', '缺失', '替换中', '混放'];
@@ -120,6 +120,7 @@ export function PropsPanel({
               <th className="px-6 py-3 font-medium">位置</th>
               <th className="px-6 py-3 font-medium">数量</th>
               <th className="px-6 py-3 font-medium">状态</th>
+              <th className="px-6 py-3 font-medium">处理进度</th>
               <th className="px-6 py-3 font-medium">操作</th>
             </tr>
           </thead>
@@ -149,6 +150,26 @@ export function PropsPanel({
                   <StatusBadge status={p.status} />
                 </td>
                 <td className="px-6 py-3">
+                  {(p.status === '缺失' || p.status === '混放') && p.resolveStatus ? (
+                    <div className="space-y-1">
+                      <ResolveBadge status={p.resolveStatus} />
+                      {p.resolvedBy && (
+                        <div className="text-xs text-slate-500 flex items-center gap-1">
+                          <User size={10} />
+                          {p.resolvedBy}
+                        </div>
+                      )}
+                      {p.resolveNote && (
+                        <div className="text-xs text-slate-400 max-w-[180px] truncate">
+                          {p.resolveNote}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-300">—</span>
+                  )}
+                </td>
+                <td className="px-6 py-3">
                   <button
                     onClick={() => onQuickAction(p)}
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 border border-primary-100 transition"
@@ -161,7 +182,7 @@ export function PropsPanel({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-slate-400">
+                <td colSpan={8} className="px-6 py-12 text-center text-slate-400">
                   没有匹配的道具
                 </td>
               </tr>

@@ -1,6 +1,6 @@
 import { useStore } from '../store/StoreContext';
-import { RecordBadge } from './Badges';
-import { Activity, ClipboardCheck } from 'lucide-react';
+import { RecordBadge, ResolveBadge } from './Badges';
+import { Activity, ClipboardCheck, PlayCircle, CheckCircle2 } from 'lucide-react';
 
 export function ActivityTimeline() {
   const { todayRecords } = useStore();
@@ -36,6 +36,10 @@ export function ActivityTimeline() {
                       ? 'bg-orange-500'
                       : r.type === '场次核对'
                       ? 'bg-primary-500'
+                      : r.type === '开始处理'
+                      ? 'bg-sky-500'
+                      : r.type === '已解决'
+                      ? 'bg-teal-500'
                       : 'bg-red-500'
                   }`}
                 />
@@ -48,6 +52,21 @@ export function ActivityTimeline() {
                       <ClipboardCheck size={10} />
                       场次核对发现
                     </span>
+                  )}
+                  {r.type === '开始处理' && (
+                    <span className="text-xs bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                      <PlayCircle size={10} />
+                      跟进中
+                    </span>
+                  )}
+                  {r.type === '已解决' && (
+                    <span className="text-xs bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                      <CheckCircle2 size={10} />
+                      处理完成
+                    </span>
+                  )}
+                  {r.resolveStatus && r.type !== '开始处理' && r.type !== '已解决' && (
+                    <ResolveBadge status={r.resolveStatus} />
                   )}
                   {r.sessionName && (
                     <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
